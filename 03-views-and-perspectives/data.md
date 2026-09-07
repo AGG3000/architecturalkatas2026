@@ -31,7 +31,7 @@ On top of database-per-quantum — a single analytics/ML platform (see [ADR-022]
 **Digital Twin (conceptually, not a separate component).** The park's "digital twin" is represented by a **set of current domain projections and aggregates** (gold layer + Semantic Layer) on top of the Lakehouse data — a live representation of the state of assets, visitors, queues, staff and animals. AI agents use these projections as a single context for decisions. We do **not** introduce a separate Twin component/layer: the twin is a projection of already existing data, not a new system (near-real-time context for agent dialogue is the fast memory tier, see ADR-024).
 
 ## Flows and consistency
-- Backbone: topics + **compacted topics** ("latest state by key").
+- Backbone: **two kinds of topics** — **compacted** (snapshot, "latest state by key": statuses, positions, configs) and **retained-as-log** (full history for audit/training: `HealthEvent` 2–3 yrs, `TicketPurchased`, telemetry). Compaction applies to state topics only, **not** to the event log.
 - A single **partitioning key** for paired topic↔table (ordering of updates).
 - **Eventual consistency** by default; strict — only Q1 (payments).
 - Reliability: **Inbox/Outbox**, at-least-once + idempotency by event id.
@@ -46,8 +46,38 @@ The bus is the **API between quanta**, so an event contract is managed as an API
 - Runtime — discarding of stale versions by number ([ADR-007](../04-adrs/ADR-007-event-reliability-inbox-outbox.md)).
 
 ## Lifecycle
-- **Animal telemetry (Q4 time-series):** raw data — a "hot" window of **90 days** at full resolution; then **downsampling** (hour/day aggregates) and transfer to the warehouse (Q3) for **~2 years** for health/seasonality trends; raw camera video is **not stored** (edge inference, only events go outward; optionally a short local buffer for investigations — hours/days). Example thresholds, tuned by cost. (assumption)
-- **HealthEvent/alerts (Q5):** stored longer than telemetry (**~2–3 years**) as an audit of welfare decisions and a training signal.
+- **Animal telemetry (Q4 time-series):** raw data — a "hot" window of **90 days** at full resolution; then **downsampling** (hour/day aggregates) and transfer to the warehouse (Q3) for **≈2 years** for health/seasonality trends; raw camera video is **not stored** (edge inference, only events go outward; optionally a short local buffer for investigations — hours/days). Example thresholds, tuned by cost. (assumption)
+- **HealthEvent/alerts (Q5):** stored longer than telemetry (**≈2–3 years**) as an audit of welfare decisions and a training signal.
 - **VisitEvent (Q3):** individual events under a pseudonymous ticket_id — a short retention, then only **de-identified aggregates** (heatmap/dwell) for a long period; the personal raw history is deleted together with the ticket_id key.
 - **Mobile telemetry:** pseudonymous ticket ID → **crypto-shredding** on completion of the visit (deleting the key makes the history unrecoverable).
 - **Edge buffer (data mule / store-and-forward):** deleted after a confirmed idempotent upload to the cloud.
+
+## Storage sizing
+Orders of magnitude (assumption — the brief gives no volumes; calibrate on real sensors/traffic). **Raw stays on the edge** (video, vibration waveforms) → the analytical lake ingests events/metadata/features, so it stays small. Three separate stores with different retention:
+
+### 1. Analytical lake (Lakehouse, Parquet/Iceberg)
+| Source | ~GB/yr |
+|---|---|
+| IoT climate/telemetry (compressed; 90-day hot + downsample) | ~5 |
+| VisitEvent Q3 (individual short → aggregates) | ~10 |
+| Ride PdM **features** (Q13 — not waveforms) | ~3 |
+| CV metadata (heatmap/queues/welfare events) | ~5 |
+| Health/audit + AI-decision audit + eval logs | ~4 |
+| Feature Store (derived) | ~2 |
+
+Bronze ~30 → medallion (×~1.8) ≈ **~50 GB/yr → ~100–150 GB over 3 yr**. Object storage ≈ $0.02/GB/mo → **≈ $2–4/mo**. The Lakehouse cost line is mostly **compute/query/feature-serving, not bytes**.
+
+### 2. Media (object storage / CDN — separate)
+360 tours + highlight clips: raw 360 ≈ 1–1.5 TB/yr (≈ $20–35/mo); with **"keep highlights, prune raw after processing"** → ~50–200 GB/yr (≈ $1–5/mo).
+
+### 3. Observability & audit (separate stack, short retention, sampled)
+| Stream | ~volume (hot) |
+|---|---|
+| Metrics (SLO/latency/fitness/PSI/cost) | a few GB/yr (priced by series) |
+| Logs (services/edge/ingest; 7–14-day hot, then archive/drop) | ~30–100 GB hot |
+| **Agent traces** (span per tool-call; **sampled**: 100% errors + a fraction of successes) | ~15–35 GB/yr |
+| AI-decision audit (by **reference**, not payload) | ~10–40 GB/yr; welfare subset 2–3 yr |
+
+≈ 50–200 GB/yr hot ≈ **$50–150/mo** (in the "IdP · maps · observability" + AIP-audit lines).
+
+**Levers & privacy.** Trace sampling; log levels + short hot retention; controlled metric cardinality; audit by reference, not payload. **Edge logs are delay-tolerant** — shipped via the same store-and-forward/mule, not the real-time channel. **Agent traces carry prompts/responses/retrieved context → potential visitor PII:** PII-redaction on ingest, limited trace retention, role-based access ([security-privacy](security-privacy.md)) — observability must not become a shadow copy of personal data.

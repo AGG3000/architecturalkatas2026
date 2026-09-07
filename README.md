@@ -8,27 +8,35 @@ A modern AI architecture for the estate of the 72nd Countess von Digitalis: tick
 
 ```mermaid
 flowchart TB
+    users(["Visitors · Staff · Vets · Management"])
     subgraph EDGE["EDGE — patchy Wi-Fi · store-and-forward · data-mule"]
         sensors["IoT/MQTT · Edge AI cameras · Gate · Shuttle"]
     end
     events{{"EVENT BACKBONE<br/>topics · Inbox/Outbox · at-least-once"}}
     ops["Operational quanta<br/>Ticketing · Animal Care · Rides · Growth · Notify · Identity · Ops"]
-    data[("Lakehouse + Feature Store + Semantic Layer<br/>('digital twin' = domain projections, not a separate component)")]
+    data[("Lakehouse + Feature Store + Semantic Layer")]
     ai["AI behind AI Gateway<br/>Crowd Prediction · Animal Health · Dynamic Pricing<br/>(on CV / RAG / ML)"]
     agents["AI agents by stakeholder<br/>Visitor (Concierge) · Operations (Copilot) · Animal · Management"]
+    ext["External providers<br/>PSP · LLM/CV · social"]
 
+    users --> ops
+    users --> agents
     sensors -->|"events / metadata"| events
     sensors -. "real-time bypass:<br/>local safety alerts (no cloud)" .-> ops
     events <--> ops
-    ops -. "CDC" .-> data
+    ops -. "change capture (CDC)" .-> data
     ops <--> ai
     data -. "features / memory" .-> ai
     ai --> agents
     agents == "tool-call + human-in-the-loop" ==> ops
     agents -. "read twin / memory" .-> data
+    ops --> ext
+    ai --> ext
 ```
 
-*Not a linear pipeline: the bus is the central hub (bidirectional exchange), critical data bypasses the cloud (edge-bypass), agents act back into the quanta through typed tools. More detail — [layered view](diagrams/layered-reference.md).*
+**Legend — lines:** solid → main data flow / call · dashed → inference, change-capture (CDC), memory, or real-time bypass · **bold** → agent action via a typed tool (human-in-the-loop). **Shapes:** rounded = people (actors) · cylinder = data store · hexagon = event bus.
+
+*Not a linear pipeline: the bus is the central hub (bidirectional exchange), critical data bypasses the cloud (edge-bypass), agents act back into the quanta through typed tools. The data platform (Lakehouse + Feature Store + Semantic Layer) doubles as the park's "digital twin" — domain projections, not a separate system. More detail — [layered view](diagrams/layered-reference.md).*
 
 **5 core AI capabilities (the brief's pain points):** Visitor Concierge · Animal Health AI · Crowd Prediction · Dynamic Pricing · Operations Copilot.
 **+ additional AI use cases:** AI social marketing (highlight-mining) · AI schedules (constraint-opt) · monetization of carnivorous plants (feeding-show CV) · autonomous shuttle + data-mule · feedback sentiment.
@@ -43,20 +51,22 @@ flowchart TB
 5. **[Diagrams](diagrams/README.md)** — C4, deployment, data-flow (data movement).
 6. Depth: [views](#table-of-contents) (deployment/reliability/security/data/cost/operational/**risk-register**) · [glossary](glossary.md).
 
-## Master traceability (goal → capability → quantum → key ADR → risk)
+## Master traceability (goal → capability → quantum → key ADR → risk → fitness)
 
-| Brief goal | Capability | Quantum | Key ADR | Risk |
-|---|---|---|---|---|
-| Tickets + family passes | Ticketing/Access | Q1/Q2 | [006](04-adrs/ADR-006-pci-ticketing-isolation-external-psp.md) | R15 |
-| Understand zone popularity | Analytics + Crowd Prediction | Q3 | [020](04-adrs/ADR-020-crowd-prediction-ai.md) | R10 |
-| Animal health/feeding | Animal Health AI | Q5 | [010](04-adrs/ADR-010-human-in-the-loop-confidence-thresholds.md) | R16 |
-| Growth and visitor return | Growth / Visitor Concierge | Q6 | [023](04-adrs/ADR-023-agentic-layer.md) | R9 |
-| Profitability | Dynamic Pricing / AI Marketing | Q1/Q11 | [021](04-adrs/ADR-021-dynamic-pricing-ai.md) | R13 |
-| patchy Wi-Fi + data to cloud | Edge + data-mule | Q2/Q4/Q10 | [004](04-adrs/ADR-004-edge-connectivity-mesh-cellular-data-mule.md) | R1/R3 |
-| AI uncertainty | AI Gateway (multi-provider) | AIP | [008](04-adrs/ADR-008-ai-platform-provider-abstraction-fallback-cost.md) | R5 |
-| AI validation/verification | Governance + HITL | AIP | [018](04-adrs/ADR-018-ai-governance-framework.md) | R6 |
+Closed loop — from a brief goal all the way to how we verify it (fitness function / V&V).
 
-*The full bidirectional Risk↔ADR traceability — in the [risk-register](03-views-and-perspectives/risk-register.md).*
+| Brief goal | Capability | Quantum | Key ADR | Risk | Fitness / V&V |
+|---|---|---|---|---|---|
+| Tickets + family passes | Ticketing/Access | Q1/Q2 | [006](04-adrs/ADR-006-pci-ticketing-isolation-external-psp.md) | R15 | PCI scope = SAQ-A; 0 double-charges (idempotency); offline validation success |
+| Understand zone popularity | Analytics + Crowd Prediction | Q3 | [020](04-adrs/ADR-020-crowd-prediction-ai.md) | R10 | queue/forecast error ≤ 15%; drift PSI < 0.2 |
+| Animal health/feeding | Animal Health AI | Q5 | [010](04-adrs/ADR-010-human-in-the-loop-confidence-thresholds.md) | R16 | welfare recall ≥ 0.95; F1 ≥ 0.90; alert→keeper ≤ 30 s |
+| Growth and visitor return | Growth / Visitor Concierge | Q6 | [023](04-adrs/ADR-023-agentic-layer.md) | R9 | quest completion ≥ 30%; agent task-success / override-rate |
+| Profitability | Dynamic Pricing / AI Marketing | Q1/Q11 | [021](04-adrs/ADR-021-dynamic-pricing-ai.md) | R13 | revenue/utilization vs complaints; fairness audit; brand-safety (R20) |
+| patchy Wi-Fi + data to cloud | Edge + data-mule | Q2/Q4/Q10 | [004](04-adrs/ADR-004-edge-connectivity-mesh-cellular-data-mule.md) | R1/R3 | degraded-mode drill; 0 data loss (at-least-once + idempotent) |
+| AI uncertainty | AI Gateway (multi-provider) | AIP | [008](04-adrs/ADR-008-ai-platform-provider-abstraction-fallback-cost.md) | R5 | per-provider eval-gate; cost-per-request; switching policy |
+| AI validation/verification | Governance + HITL | AIP | [018](04-adrs/ADR-018-ai-governance-framework.md) | R6 | eval-harness + calibration; incident MTTD; audit trail |
+
+*Full bidirectional Risk↔ADR traceability — in the [risk-register](03-views-and-perspectives/risk-register.md). Per-capability fitness thresholds — in [validation & verification](05-ai/validation-verification.md).*
 
 ## Key qualities of the solution → where covered
 
@@ -108,10 +118,10 @@ flowchart TB
 <details>
 <summary>Full map of the submission's files (expand)</summary>
 
-- [Overview](00-overview.md) · [Glossary](glossary.md)
+- [Overview](00-overview.md) · [Glossary](glossary.md) · [How we used AI](how-we-used-ai.md) · [Decision log & negative space](decision-log.md)
 - Problem: [brief facts](01-problem/brief-facts.md) · [stakeholders](01-problem/stakeholders.md) · [requirements](01-problem/requirements.md) · [constraints & assumptions](01-problem/constraints-assumptions.md)
 - Solution: [architecture style](02-solution/architecture-style.md) · [domain map](02-solution/domain-map.md) · [MVP vs roadmap](02-solution/mvp-vs-roadmap.md)
-- Views: [deployment](03-views-and-perspectives/deployment.md) · [reliability](03-views-and-perspectives/reliability.md) · [security & privacy](03-views-and-perspectives/security-privacy.md) · [data](03-views-and-perspectives/data.md) · [cost](03-views-and-perspectives/cost.md) · [operational & team](03-views-and-perspectives/operational.md) · [risk register (RAID)](03-views-and-perspectives/risk-register.md)
+- Views: [deployment](03-views-and-perspectives/deployment.md) · [reliability](03-views-and-perspectives/reliability.md) · [security & privacy](03-views-and-perspectives/security-privacy.md) · [data](03-views-and-perspectives/data.md) · [cost](03-views-and-perspectives/cost.md) · [operational & team](03-views-and-perspectives/operational.md) · [implementation plan](03-views-and-perspectives/implementation-plan.md) · [risk register (RAID)](03-views-and-perspectives/risk-register.md)
 - [ADRs index](04-adrs/README.md) · AI: [overview](05-ai/ai-overview.md) · [agents](05-ai/agents.md) · [uncertainty](05-ai/uncertainty.md) · [validation & verification](05-ai/validation-verification.md) · [governance](05-ai/governance.md)
 - Diagrams: [structure](diagrams/README.md) — [layered view](diagrams/layered-reference.md) · [C4 context](diagrams/c4-context.md) · [C4 container](diagrams/c4-container.md) · [deployment](diagrams/deployment.md) · [AI Gateway](diagrams/ai-gateway.md)
 - Data-flow: [sensor→decision](diagrams/flow-sensor-to-decision.md) · [data-mule](diagrams/flow-data-mule.md) · [data→forecast→action](diagrams/flow-data-to-decision.md) · [data lifecycle](diagrams/flow-data-lifecycle.md)
@@ -119,7 +129,7 @@ flowchart TB
 </details>
 
 ## Team
-TODO: team name + members (fill in before submission).
+**BONK**
 
 ---
 *Fact/assumption legend: the brief's facts — in `01-problem/brief-facts.md` (SSOT). Everything marked "(assumption)" is our design assumption.*

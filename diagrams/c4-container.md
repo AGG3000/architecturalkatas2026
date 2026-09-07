@@ -1,8 +1,8 @@
 # C4 L2 — Containers (quanta, event backbone, edge, AIP, data & agent platform)
 
-**What it shows:** the internal decomposition of the platform into 13 business quanta, the cross-cutting AIP, the **data platform (Lakehouse+Feature Store+Semantic Layer)**, and the **agent layer**, linked via the event backbone, with an edge layer and clients/BFF.
+**What it shows:** the internal decomposition of the platform into 13 conceptual business quanta (~7 deployable units in the MVP), the cross-cutting AIP, the **data platform (Lakehouse+Feature Store+Semantic Layer)**, and the **agent layer**, linked via the event backbone, with an edge layer and clients/BFF.
 
-The internal decomposition of the platform into **13 business quanta (Q1–Q13)** + the cross-cutting **AIP** + the **data platform** (shared memory/analytics) + the **AI Agent Platform** (agents by stakeholder), linked via the **event backbone**, with an **edge layer** (devices under patchy Wi-Fi) below and clients/BFF above. Each quantum is an independent deployment with its own DB; synchronous REST is only front↔BFF, everything else — via the event bus. The data platform and the agent layer are **roadmap phases (R1–R2)**, as are the Q10/Q11/Q12 quanta.
+The internal decomposition of the platform into **13 conceptual business quanta (Q1–Q13; ~7 deployable units in the MVP)** + the cross-cutting **AIP** + the **data platform** (shared memory/analytics) + the **AI Agent Platform** (agents by stakeholder), linked via the **event backbone**, with an **edge layer** (devices under patchy Wi-Fi) below and clients/BFF above. Each quantum is an independently deployable unit with its own DB — a **target** state; in the MVP several co-deploy as modular monoliths (Q5 in Q4, Q9 in Q6), so the MVP ships **~7 deployable units, not 13** (see [mvp-vs-roadmap](../02-solution/mvp-vs-roadmap.md)). Synchronous REST is only front↔BFF, everything else — via the event bus. The data platform and the agent layer are **roadmap phases (R1–R2)**, as are the Q10/Q11/Q12 quanta.
 
 ```mermaid
 flowchart TB

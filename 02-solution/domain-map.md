@@ -1,6 +1,6 @@
 # Domain map (quanta)
 
-A summary of the decomposition into architectural quanta. Boundaries are drawn where the **driving characteristics diverge** (each quantum has its own style and its own DB). Flow diagrams are in `../03-views-and-perspectives/`, decisions are in `../04-adrs/`.
+A summary of the decomposition into architectural quanta. Boundaries are drawn where the **driving characteristics diverge** (each quantum has its own style and its own DB). **13 is the conceptual granularity; the MVP ships ~7 deployable units** — some quanta co-deploy as modular monoliths (Q5 in Q4, Q9 in Q6) until R2 (see the focus note below). Flow diagrams are in `../03-views-and-perspectives/`, decisions are in `../04-adrs/`.
 
 | # | Quantum | Responsibility | Top-3 characteristics | Style | Data ownership |
 |---|---|---|---|---|---|

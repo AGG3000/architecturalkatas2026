@@ -3,7 +3,7 @@
 This file is the single source of truth (SSOT) for the brief's facts for this submission. Everything marked "(assumption)" is our design assumption, not a fact of the brief.
 
 ## Numbers
-- ~5000 visitors/day today → target **≥15000/day within 3 years** (otherwise sell the carnivorous plants).
+- ≈5000 visitors/day today → target **≥15000/day within 3 years** (otherwise sell the carnivorous plants).
 - **40** attractions (18th century) · **200+** animals across **55** enclosures (incl. jumping piranhas).
 
 ## Assets

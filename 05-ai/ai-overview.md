@@ -68,7 +68,7 @@ Every AI capability is **tied to a number it moves**, and has a **deterministic 
 |---|---|---|---|---|---|
 | Growth of repeat visits | +20% repeat rate *(assum.)* | Personalization / Concierge | Predictive + Generative | Visitor Agent — Q6 + RAG ([ADR-019](../04-adrs/ADR-019-rag-knowledge-assistant.md)/[023](../04-adrs/ADR-023-agentic-layer.md)) | static recommendation rules (popular/nearest) |
 | Growth of attendance | 5000 → **15000/day** *(fact §C)* | AI social marketing + Dynamic Pricing | Generative + Predictive | Q11 + Q1 ([ADR-016](../04-adrs/ADR-016-ai-marketing-and-scheduling-hitl-provider-abstraction.md)/[021](../04-adrs/ADR-021-dynamic-pricing-ai.md)) | fixed post schedule + fixed prices |
-| Profitability | AI/cloud ≤ ~1% of revenue *(assum., see [cost](../03-views-and-perspectives/cost.md))* | Dynamic Pricing | Predictive + rules | Q1/Q6 ([ADR-021](../04-adrs/ADR-021-dynamic-pricing-ai.md)) | fixed prices within min/max corridors |
+| Profitability | AI/cloud ≤ ≈1% of revenue *(assum., see [cost](../03-views-and-perspectives/cost.md))* | Dynamic Pricing | Predictive + rules | Q1/Q6 ([ADR-021](../04-adrs/ADR-021-dynamic-pricing-ai.md)) | fixed prices within min/max corridors |
 | Zone popularity + staffing | −20% peak queues *(assum.)* | Crowd Prediction | Classical ML (forecast) | Q3 + AIP ([ADR-020](../04-adrs/ADR-020-crowd-prediction-ai.md)) | day-of-week/time-of-day heuristics |
 | Healthy animals (↓ costs) | early-detection recall ≥ 0.95 | Animal Health | CV + anomaly | Q5 + Animal Agent ([ADR-010](../04-adrs/ADR-010-human-in-the-loop-confidence-thresholds.md)) | threshold rules on telemetry |
 | Piranha population control | count error ≤ 10% | Piranha counting | CV | Q5 edge-CV | manual periodic counting |

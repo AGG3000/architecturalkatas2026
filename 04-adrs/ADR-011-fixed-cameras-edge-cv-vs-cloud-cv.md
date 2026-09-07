@@ -34,8 +34,8 @@ CV inference — on the edge; the cloud — training/retraining and aggregate an
 - Mitigation: provider abstraction of models (AIP) + OTA updates + fitness functions; heavy models — offline in the cloud on samples; breach sensors are cheap and reliable for escape.
 
 ## TCO: edge vs cloud inference (order of magnitude)
-- **Edge (our choice):** higher CapEx (~6 boxes × ~$800 ≈ $5k) + ownership (power/amortization/MLOps-OTA ≈ $220-500/month), but inference on-site, **video egress = 0**.
-- **Cloud inference:** lower CapEx, but requires **streaming video outside**: ~19 cameras × even 2 Mbit/s (heavily compressed) ≈ 38 Mbit/s continuously → ~12 TB/month egress+ingest per camera park; under patchy Wi-Fi this is **physically unavailable**, and in money egress + cloud GPU inference easily exceeds the cost of edge ownership already at dozens of cameras.
+- **Edge (our choice):** higher CapEx (≈6 boxes × ≈$800 ≈ $5k) + ownership (power/amortization/MLOps-OTA ≈ $220-500/month), but inference on-site, **video egress = 0**.
+- **Cloud inference:** lower CapEx, but requires **streaming video outside**: ≈19 cameras × even 2 Mbit/s (heavily compressed) ≈ 38 Mbit/s continuously → ≈12 TB/month egress+ingest per camera park; under patchy Wi-Fi this is **physically unavailable**, and in money egress + cloud GPU inference easily exceeds the cost of edge ownership already at dozens of cameras.
 - **Conclusion:** edge is cheaper by TCO **and** the only option under patchy Wi-Fi; cloud inference is rejected both on cost and on feasibility (§E).
 
 ## Considered / Rejected alternatives

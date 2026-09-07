@@ -17,6 +17,20 @@ Introduce **confidence thresholds** with three zones. **Default band** (calibrat
 
 **Thresholds are per-domain, not global:** for **safety/welfare/pricing** the bar is higher or a human is **mandatory regardless of score** — critical welfare decisions (euthanasia, isolation, change of feeding), the autonomous shuttle, publications, pricing policy go through a human even at confidence > 0.9. For low-risk ones (a content draft) auto is acceptable even at lower confidence. Reason: AI speeds up detection, but responsibility for the outcome remains with the human.
 
+**Thresholds are derived from the cost of error, not from a "0.9" convention.** For each domain we weigh the cost of a **false positive (FP)** against a **false negative (FN)**: for welfare a miss (a dead rare/venomous animal) is many times costlier than a false alarm → the asymmetry is **FN ≫ FP** → the bar is shifted toward **escalation/human review** (maximizing recall, conservatively). For low-risk ones (a content draft) an FP is cheap → a higher auto bar is acceptable. So the specific threshold numbers are a **consequence of the domain's cost-of-error matrix**, and are revised together with it (e.g. welfare recall in [validation-verification](../05-ai/validation-verification.md)).
+
+**Cost-of-error matrix** (illustrative — calibrate on real data):
+
+| Domain | Cost of a miss (FN) | Cost of a false alarm (FP) | ~FN:FP | Threshold bias |
+|---|---|---|---|---|
+| Ride safety (Q13) | injury (catastrophic) | inspection time | ~100:1 | 0 missed = hard gate; human clears |
+| Animal welfare (Q5) | death of a rare/venomous animal | keeper time | ~20:1 | maximize recall; human mandatory |
+| Content brand-safety (Q11) | brand/reputational hit | wasted draft | ~5:1 | approval queue before publish |
+| Dynamic pricing (Q1) | lost revenue / perceived unfairness | minor | ~3:1 | corridors + human-approved policy |
+| Concierge suggestion (Q6) | a weak suggestion | a weak suggestion | ~1:1 | auto is fine |
+
+Rule: the higher the FN:FP ratio, the lower the escalation bar (more goes to a human). The numbers are assumptions — the point is that thresholds are **derived** from this matrix, not picked by convention.
+
 Thresholds are **calibrated** (confidence must reflect real accuracy) and **tuned with fitness functions** (too many false auto-actions → raise the threshold; overloaded confirmation queue → lower/prioritize).
 
 ## Consequences

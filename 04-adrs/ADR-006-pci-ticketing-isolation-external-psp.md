@@ -11,7 +11,7 @@ Carve out **Q1 Ticketing & Payments into a separate quantum with an isolated Ord
 
 ## Consequences
 - Pros: minimal PCI scope (SAQ-A class), cards not stored, risk/compliance on the PSP, isolation of the secure domain from the rest of the system, readiness for family passes/refunds.
-- Cons: dependency on the PSP (availability, fees ~2.9%+$0.30/transaction), less control over the payment UX, vendor lock-in at the integration level.
+- Cons: dependency on the PSP (availability, fees ≈2.9%+$0.30/transaction), less control over the payment UX, vendor lock-in at the integration level.
 - Mitigations: payments abstracted behind an interface (option of a second PSP), at-least-once + idempotency against double charges (see [ADR-007](ADR-007-event-reliability-inbox-outbox.md)), strong consistency within Q1 (an exception to eventual-by-default, [ADR-001](ADR-001-event-driven-architecture-and-quanta.md)).
 - **Partial failure of a distributed payment** ("PSP charged, but Q1 did not confirm" / a lost webhook): the PSP is the **source of truth** for the payment; an idempotent **reconciliation job** reconciles webhook ↔ order and **compensates** (auto-retry of confirmation or auto-refund); the webhook is processed idempotently (dedup by event id). This is a compensating pattern instead of a distributed transaction.
 

@@ -53,3 +53,11 @@ The quality of AI services is tracked continuously via three metrics understanda
 - **Human Override Rate** — how often staff reject or correct AI recommendations. This is the **earliest indicator of degradation**: user trust drops before it becomes visible in other metrics.
 
 **Corrective Actions.** If quality falls below the target level, error counts rise, or users increasingly cancel AI recommendations — the platform performs corrective actions: rollback to a previous model or prompt version; revision of the agent's instructions and tools; strengthening Human-in-the-Loop control; restricting the agent's set of permitted actions until quality recovers.
+
+## Golden-set governance
+The eval gate is only as honest as its golden set:
+- **Owner** — each capability's golden set has a named owner (vet for Q5 welfare, ops for Q3, curator for Q11).
+- **Versioning** — golden sets are versioned; a model is evaluated against a pinned version and the result is stored with the model+prompt version (reproducible).
+- **Rare/critical-class coverage** — deliberately over-sample rare-but-critical cases (illness, cold-blooded escape, a bite); recall ≥ 0.95 is meaningless if the set has 2 positives per 1000 → a **coverage target per critical class + stratified metrics**, not just aggregate F1.
+- **Leakage prevention** — train/golden split **by time and by entity** (no same-animal / same-session leakage between train and eval).
+- **Growth & re-validation** — keeper/vet confirmations become new labels (labels are a side-effect of the job); the golden set is re-validated each season and on drift (PSI), with relabeling on distribution shift.
