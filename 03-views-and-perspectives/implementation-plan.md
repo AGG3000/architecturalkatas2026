@@ -2,6 +2,45 @@
 
 One rule anchors the timeline: **sensors buy in a week, a year of data buys for nothing.** So each AI capability is scheduled by *when its data exists*, not by ambition — until then it runs its deterministic fallback (see [ADR-009](../04-adrs/ADR-009-rules-to-ai-cold-start.md)). Dates are illustrative (assumption).
 
+## Delivery timeline (Gantt)
+
+Month 0 = project start (illustrative anchor). ML bars begin at the **earliest** date their data exists (cold-start table below); each is promoted only when it beats its rule-fallback on the golden set.
+
+```mermaid
+gantt
+    title Von Digitalis — delivery plan (illustrative; ML gated by data availability)
+    dateFormat YYYY-MM-DD
+    axisFormat %b %Y
+
+    section Phase 0 — Foundation (rules, no ML)
+    Edge + MQTT + offline gates + event backbone   :p0a, 2026-01-01, 30d
+    Ticketing/PCI + family passes + RFID pilot      :p0b, after p0a, 30d
+    Ride registry (Q13-min) + Notif + Identity      :p0c, after p0b, 30d
+    Telemetry collection (feeds later ML)           :active, tel, 2026-01-01, 270d
+    MVP core live (deterministic)                   :milestone, mMVP, after p0c, 0d
+
+    section AI (turns on when data exists)
+    RAG Concierge / Ops Copilot (no history)        :ai1, 2026-01-01, 60d
+    Piranha counting CV                             :ai2, 2026-02-01, 45d
+    Animal Health anomaly ML                        :ai3, 2026-07-01, 90d
+    Crowd Prediction ML                             :ai4, 2026-10-01, 90d
+    Dynamic Pricing ML                              :ai5, 2027-01-01, 90d
+    Predictive Maintenance ML (Q13)                 :ai6, 2027-04-01, 90d
+
+    section R1 — split on signal
+    Lakehouse + Feature Store + Semantic Layer      :r1a, 2026-10-01, 120d
+    Q11 Social Marketing + Q12 Ops Scheduling       :r1b, 2026-11-01, 120d
+
+    section R2 — split + agents
+    Split Q5 from Q4, Q9 from Q6                     :r2a, 2027-01-01, 90d
+    Full agentic layer + two-tier memory            :r2b, 2027-02-01, 120d
+    Scale to 15k/day (team splits, OpEx ~9.4k/mo)   :milestone, mScale, 2027-01-01, 0d
+
+    section R3 — regulatory-gated
+    Shuttle autonomy (supervised -> night -> driverless) :crit, r3, 2027-06-01, 180d
+```
+
+
 ## Phase 0 — Foundation (months 0–3), no ML yet
 Edge (MQTT store-and-forward, gate offline-cache), event backbone, Ticketing/PCI (Q1/Q2), Identity (Q8), **anonymous footfall counting (Q3, rules only)**, Notifications (Q7), Ride registry + rule-based inspections (Q13-min), AI Gateway (basic), **manned electric land-train (Q10 asset) leased + data-mule collector on board**. Everything runs on deterministic rules; **data collection starts** so models have something to learn from later.
 

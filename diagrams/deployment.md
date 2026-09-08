@@ -32,7 +32,7 @@ flowchart TB
         direction LR
         ingest["Cloud ingest<br/>(idempotent upload)"]:::cloud
         backbone[["Event Backbone<br/>(topics / streams)"]]:::bus
-        quanta["Business quanta Q1·Q3·Q5·Q6·Q7·Q8·Q9·Q11·Q12<br/>(containers / serverless scale-to-zero)"]:::cloud
+        quanta["Business quanta Q1·Q3·Q5·Q6·Q7·Q8·Q9·Q11·Q12·Q13<br/>(containers / serverless scale-to-zero)"]:::cloud
         stores[("DBs: operational · analytics warehouse ·<br/>time-series · object storage/CDN")]:::db
         aip["AIP — AI Platform<br/>provider abstraction · guardrails · eval · cost-monitor"]:::aip
     end
