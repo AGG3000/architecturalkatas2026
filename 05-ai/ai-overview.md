@@ -47,7 +47,7 @@ Two tiers: the five core capabilities close the brief's direct pain points; the 
 | **AI Social Marketing** | highlight-mining of standout moments from cameras → auto-generation of posts | Q11 + AIP ([ADR-016](../04-adrs/ADR-016-ai-marketing-and-scheduling-hitl-provider-abstraction.md)) |
 | **AI Scheduling** | constraint optimization of shifts/feeding/maintenance (welfare × crowd) | Q12 + solver/AIP ([ADR-016](../04-adrs/ADR-016-ai-marketing-and-scheduling-hitl-provider-abstraction.md)) |
 | **Plant monetization** *(assumption)* | CV detection of "plant caught prey" → feeding show + viral content; care guide | Fixed Cameras + Q12/Q7/Q11 + Mobile App |
-| **Autonomous shuttle + data-mule** | autonomy (supervised→driverless) + data delivery under patchy Wi-Fi (DTN) | Q10 ([ADR-015](../04-adrs/ADR-015-autonomous-shuttle-and-data-mule.md)) |
+| **Autonomous shuttle + data-mule** | autonomy (supervised→driverless, roadmap R3) + data-mule (MVP, on the manned transport) for data delivery under patchy Wi-Fi (DTN) | Q10 ([ADR-015](../04-adrs/ADR-015-autonomous-shuttle-and-data-mule.md)) |
 | **Feedback Sentiment** | feedback sentiment → what to improve | Q9 + AIP |
 
 *The second tier is genuinely worked out (its own ADRs/quanta/costs/risks), but deliberately kept outside the "top five" to maintain focus. All applications are in the table above and in the [ADR index](../04-adrs/README.md).*

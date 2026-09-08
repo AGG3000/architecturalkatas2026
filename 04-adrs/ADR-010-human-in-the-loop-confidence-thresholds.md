@@ -33,6 +33,8 @@ Rule: the higher the FN:FP ratio, the lower the escalation bar (more goes to a h
 
 Thresholds are **calibrated** (confidence must reflect real accuracy) and **tuned with fitness functions** (too many false auto-actions → raise the threshold; overloaded confirmation queue → lower/prioritize).
 
+**Calibration is a verifiable gate, not an assumption.** Routing by these thresholds is only meaningful with a calibrated score, so calibration is measured with **ECE (Expected Calibration Error)** + Brier + a reliability curve on the golden-set and acts as a **blocking calibration-gate in CI** (ECE ≤ 0.05): a release whose confidence does not reflect real accuracy is not rolled out; until re-calibration (temperature/Platt) the thresholds temporarily shift toward human-review. Details and ground-truth — [validation-verification.md](../05-ai/validation-verification.md#confidence-calibration--how-we-verify-09--90-gate).
+
 ## Consequences
 - + Early disease detection without blind trust in the model; reduction of false alarms; auditability of decisions; support for validation/verification of AI results (V&V).
 - − Operational load on keepers (confirmation queue); delay at the middle threshold; risk of "alert fatigue" with poor threshold calibration.

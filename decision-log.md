@@ -19,7 +19,7 @@ The key cross-cutting decisions — and, just as important, **what we deliberate
 - **Per-person dynamic pricing** — discrimination/fairness risk; we price by time/load only.
 - **Full multi-region HA in the MVP** — a deliberate availability↔cost trade-off; 3–4 nines is enough, multi-region is roadmap.
 - **A self-built ML stack / training from scratch** — no data at start, unrealistic budget; we buy models behind the gateway.
-- **Autonomous shuttle in the MVP** — safety/regulatory/cost; supervised→driverless only in R3 after statistics.
+- **Transport asset — MVP** (manned electric land-train, carries the data-mule); **autonomy** (autopilot/driverless) — R3 after supervised-driving statistics (safety/regulatory/cost).
 
 ## The number to challenge first
 The **assumed ticket price ($20–30)** carries the affordability conclusion. It is the single most load-bearing assumption — replace it with real figures before anything else.

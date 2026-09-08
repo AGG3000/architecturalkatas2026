@@ -18,7 +18,8 @@ Not an exact payroll (salaries are out of scope; the brief does not set the team
 | Frontend/Mobile (PWA) | 1 engineer | 1–2 |
 | Edge/IoT technician (cameras, MQTT sensors, devices) — field support | part-time / contract | 1 dedicated |
 | SRE/Ops (observability, incidents) | shared | 1 |
-| Transport/autonomy (Q10) | — (roadmap phase; vendor-managed) | vendor + integration |
+| Transport (Q10 asset — manned electric) | park ops + vendor lease (MVP) | park ops + vendor lease |
+| Autonomy (Q10) | — (roadmap phase; vendor-managed) | vendor + integration |
 
 ## Operational (non-dev) roles from human-in-the-loop
 AI is designed with a human in the loop → this is an **operational load on the estate's existing staff**, not new dev teams:

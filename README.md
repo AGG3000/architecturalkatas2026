@@ -41,7 +41,7 @@ flowchart TB
 **5 core AI capabilities (the brief's pain points):** Visitor Concierge · Animal Health AI · Crowd Prediction · Dynamic Pricing · Operations Copilot.
 **+ additional AI use cases:** AI social marketing (highlight-mining) · AI schedules (constraint-opt) · monetization of carnivorous plants (feeding-show CV) · autonomous shuttle + data-mule · feedback sentiment.
 **AI directly helps 4 groups:** visitors · staff · veterinarians · management.
-**Focus:** MVP — 7 business capabilities (uniting 10 of 13 quanta: Ticketing&Access, Animal Monitoring&Health, Visitor Experience, Analytics, Ride&Attractions, Notifications, Identity) + AIP; the remaining quanta (Q10–Q12) — roadmap (see [MVP vs roadmap](02-solution/mvp-vs-roadmap.md)).
+**Focus:** MVP — 7 business capabilities (uniting 10 of 13 quanta: Ticketing&Access, Animal Monitoring&Health, Visitor Experience, Analytics, Ride&Attractions, Notifications, Identity) + AIP; Q11–Q12 and Q10 **autonomy** — roadmap (manned electric transport + data-mule ship in the MVP; see [MVP vs roadmap](02-solution/mvp-vs-roadmap.md)).
 
 ## How to read (a 5-minute path)
 1. **[00-overview](00-overview.md)** — the Countess's problems and how AI solves them (1 screen).

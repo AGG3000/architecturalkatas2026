@@ -27,6 +27,8 @@ Thresholds are examples for calibration on real data (numbers = assumption), but
 |---|---|---|---|
 | **Q5 — health/population CV** | Inference accuracy on golden-set (F1 of anomaly detection; piranha count — **robust estimate: median over multi-view + confidence interval**, excluding feeding time) | F1 ≥ 0.90; count error ≤ 10%; CI width ≤ threshold | block model release; rollback; a sharp count jump → welfare-review, not an auto-conclusion |
 | **Q5 — drift** | Data/prediction drift (PSI over inputs, shift of the confidence distribution) | PSI < 0.2; share of low-confidence < 15% | alert → retraining; raise the share of human-review |
+| **Cross-cutting — confidence calibration** | Calibration error: **ECE** (Expected Calibration Error) + **Brier score** + reliability curve on the golden-set — checks that the stated confidence reflects real accuracy (in the 0.9 bin the share of correct ≈ 90%). Measured for **any** confidence-scored output (CV Q5, LLM answer, forecast Q20/Q21) | **ECE ≤ 0.05**; Brier ↓ vs baseline; max bin deviation from the diagonal ≤ 0.1 | **block model/prompt release** (calibration-gate); re-calibrate (temperature/Platt scaling); until fixed — shift routing per [ADR-010](../04-adrs/ADR-010-human-in-the-loop-confidence-thresholds.md) more conservatively (more into human-review) |
+| **Agent — memory (write-back)** | Feedback-loop self-reinforcement: drift of the memory-derivative distribution (**PSI on self-generated writes**) + share of self-generated vs human-verified labels + rejected write-guard entries | derivative PSI < 0.2; share of self-verified does not grow unchecked; accepted anomalous writes = **0** | self-reinforcement alert → ↑ human-review; **roll back the poisoned memory batch by provenance** ([ADR-024](../04-adrs/ADR-024-lakehouse-as-agent-memory.md)) |
 | **Q5 — welfare alerts** | Recall of critical conditions (a missed illness costs more than an FP) + share confirmed by the keeper | recall ≥ 0.95; precision ≥ 0.70 | lower the confidence threshold, strengthen the human gate |
 | **Q3 — heatmap/analytics** | Latency of heatmap/NL analytics query (p95) + data freshness | p95 < 2 s; data lag < 5 min | scale the read-side; degrade to cache |
 | **Q3 — queue CV** | Accuracy of queue-length/wait-time estimate vs reference | error ≤ 15% | recalibrate camera/zone model |
@@ -44,6 +46,15 @@ Thresholds are examples for calibration on real data (numbers = assumption), but
 | **PWA — accessibility** | WCAG 2.2 AA violations (axe-core / Lighthouse-a11y) on key flows | 0 critical; score ≥ target | block the frontend release; fix contrast/aria |
 
 **Key principle for sensitive domains:** for Q10 (autonomy), Q12 (hard-constraints), and **Q13 (ride clearance for operation)** the allowable number of safety/welfare invariant violations = **0** — this is not an optimizable metric but a gate; for Q13 AI only flags for inspection, and a human clears operation.
+
+## Confidence calibration — how we verify "0.9" = 90% (gate)
+
+All decision routing runs on confidence thresholds ([ADR-010](../04-adrs/ADR-010-human-in-the-loop-confidence-thresholds.md)), so an uncalibrated score voids the three-zone logic. We **operationalize** calibration rather than declaring it:
+
+- **Metric:** **ECE** (Expected Calibration Error) — the weighted-average gap between "stated confidence ↔ actual share correct" across bins; complemented by **Brier score** and a **reliability curve** (the diagonal = perfect calibration). ECE answers exactly the question "in the 0.9 bin, are ~90% actually correct?".
+- **Threshold & gate:** **ECE ≤ 0.05**, max bin deviation ≤ 0.1 — as a **calibration-gate in the CI eval-harness**: a model/prompt release failing the threshold is **blocked** (alongside the accuracy/latency fitness functions). On failure — re-calibrate (temperature/Platt scaling); until calibrated, [ADR-010](../04-adrs/ADR-010-human-in-the-loop-confidence-thresholds.md) thresholds temporarily shift toward human-review.
+- **Where in the pipeline:** (1) **offline** — on the golden-set before rollout (blocking gate); (2) **in prod** — continuous calibration drift (reliability-curve shift), "confident-but-wrong" → miscalibration signal → retraining/re-calibration.
+- **Ground-truth (what we measure against):** the same **golden-set** labels (curation below) — verified outcomes: vet confirmation for welfare (Q5), manual/reference count for queues (Q3) and piranha (Q5; median over multi-view + CI as the reference, excluding feeding time), actual failure/inspection for Q13. Calibration is only as honest as the golden-set ground-truth.
 
 ## Agent quality monitoring (in prod)
 The quality of AI services is tracked continuously via three metrics understandable to both engineer and business:

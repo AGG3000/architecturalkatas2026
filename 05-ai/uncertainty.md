@@ -21,7 +21,7 @@ Every AI output is a **triplet `{result, confidence score, explanation}`**, not 
 - a calibrated confidence estimate per output (CV detection, LLM answer, forecast);
 - **routing by threshold** ([ADR-010](../04-adrs/ADR-010-human-in-the-loop-confidence-thresholds.md)) — default band: **>0.9 → auto action** · **0.7–0.9 → human review** · **<0.7 → manual investigation** (abstain/rules); thresholds are **per-domain** (safety/welfare/prices — a human is mandatory regardless of score);
 - for **future** uncertainty the score is not a point but an **interval/confidence band**; for **data** uncertainty the score incorporates the **input quality signal** (broken sensor/noise → low confidence regardless of the model);
-- **calibration is monitored** (confident-but-wrong = miscalibration → fitness function, retraining).
+- **calibration is monitored and gated** — an **ECE** metric (+ Brier / reliability curve) with a threshold as a **calibration-gate in CI**: confident-but-wrong = miscalibration → block the release + re-calibrate (temperature/Platt), see [validation-verification.md](validation-verification.md#confidence-calibration--how-we-verify-09--90-gate).
 
 **Explainability (why this answer → what to check it with):**
 - every decision comes with a **reason/evidence**: CV — what and where was detected (bbox / thermal zone); RAG/LLM — **source citations** ([ADR-019](../04-adrs/ADR-019-rag-knowledge-assistant.md)); forecast — factor contributions; "rules→AI" — the rule is itself explainable;

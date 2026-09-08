@@ -4,7 +4,7 @@
 
 Physical placement and **connectivity under patchy Wi-Fi**. Three tiers: edge devices in the estate → heterogeneous channels (Wi-Fi / mesh / data-mule / cellular) → cloud + AIP. Data is classified by delay tolerance: **real-time-critical** goes over a fixed/cellular channel, **delay-tolerant** — via the shuttle data mule.
 
-> **Phases:** the diagram is the target architecture. In the **MVP** the channels = fixed Wi-Fi/mesh + **cellular uplink** (dual-carrier/satellite) + edge store-and-forward; **data-mule and the shuttle (Q10) — R3** (they reduce the cost of connecting remote enclosures, not an MVP condition). See [mvp-vs-roadmap](../02-solution/mvp-vs-roadmap.md).
+> **Phases:** the diagram is the target architecture. In the **MVP** the channels = fixed Wi-Fi/mesh + **cellular uplink** (dual-carrier/satellite) + edge store-and-forward; **manned electric transport + data-mule — MVP** (they reduce the cost of connecting remote enclosures, not an MVP condition); shuttle **autonomy** — R3. See [mvp-vs-roadmap](../02-solution/mvp-vs-roadmap.md).
 
 ```mermaid
 flowchart TB
@@ -22,7 +22,7 @@ flowchart TB
         direction LR
         wifi(["Fixed Wi-Fi<br/>(where cost-effective)"]):::link
         mesh(["WiFi-mesh<br/>(mobile AP along the route)"]):::link
-        mule(["Data mule / DTN<br/>(shuttle carries the buffer, R3)"]):::link
+        mule(["Data mule / DTN<br/>(manned transport carries the buffer, MVP; autonomy R3)"]):::link
         cell(["Cellular uplink<br/>(fallback, real-time only)"]):::link
         bridge(["PtP/PtMP radio bridge<br/>(LoS: real-time for Edge/remote)"]):::link
     end

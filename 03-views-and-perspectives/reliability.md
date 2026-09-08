@@ -4,11 +4,11 @@ How the system behaves under connectivity/cloud failures. Principle: **the safet
 
 ## Data classes (reminder)
 - **Real-time-critical:** a venomous animal escaped/got sick, fire, missing-child search, payment → fixed/cellular channel, **backup mandatory**.
-- **Delay-tolerant:** routine telemetry, queue metrics, drive-by snapshots, 360 → edge buffer, catches up over Wi-Fi/cellular; **data mule — from R3** (shuttle, reduces the cost of connectivity for remote enclosures).
+- **Delay-tolerant:** routine telemetry, queue metrics, drive-by snapshots, 360 → edge buffer, catches up over Wi-Fi/cellular; **data mule — from the MVP** (on the manned transport), reduces the cost of connectivity for remote enclosures; shuttle *autonomy* — R3.
 
 ## Degradation matrix
 
-> The matrix describes the **target state**. In the **MVP** (without the Q10 shuttle) resilience rests on **edge store-and-forward + Wi-Fi/mesh/radio bridges (LoS) + cellular (dual-carrier) + local safety alerts**; the **data mule and shuttle autonomy are R3** (a reinforcement, not a condition of the MVP). Phases — [mvp-vs-roadmap](../02-solution/mvp-vs-roadmap.md).
+> The matrix describes the **target state**. In the **MVP** transport is **manned electric** and the **data mule rides it** from day 1; resilience rests on **edge store-and-forward + Wi-Fi/mesh/radio bridges (LoS) + cellular (dual-carrier) + local safety alerts** (the data mule is a reinforcement, not a condition of the MVP). Only shuttle **autonomy** is R3. Phases — [mvp-vs-roadmap](../02-solution/mvp-vs-roadmap.md).
 
 | Failure scenario | Works | Degrades | Unavailable |
 |---|---|---|---|
@@ -21,7 +21,7 @@ How the system behaves under connectivity/cloud failures. Principle: **the safet
 - **Safety-first:** a threshold alert at a critical enclosure fires locally, even if the cloud/carrier is unavailable (a deterministic edge rule, not AI).
 - **No single-carrier SPOF** for the critical class (dual-carrier + optional satellite).
 - **Sales:** validation of purchased tickets — always offline; new sales — an offline queue with idempotency and limits, worst-case mode fail-closed.
-- **Data is not lost:** the delay-tolerant is buffered (store-and-forward), idempotent upload on recovery; **in the MVP** it catches up over Wi-Fi/cellular, **from R3** the data mule reduces the cost of delivery from remote enclosures.
+- **Data is not lost:** the delay-tolerant is buffered (store-and-forward), idempotent upload on recovery; **in the MVP** it catches up over Wi-Fi/cellular, and **from the MVP** the data mule (on the manned transport) reduces the cost of delivery from remote enclosures; autonomy — R3.
 
 ## Target indicators (assumption, to be calibrated)
 - Availability of safety alerts at critical enclosures: does not depend on the cloud (local path).

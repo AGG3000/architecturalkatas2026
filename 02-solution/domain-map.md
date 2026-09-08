@@ -22,8 +22,8 @@ A summary of the decomposition into architectural quanta. Boundaries are drawn w
 > Q1, Q2, Q4 are intentionally separated: for the entry scanner (Q2) and IoT ingestion (Q4) the primary characteristic is **operating offline under patchy Wi-Fi**, which Ticketing does not have (Q1, where payment consistency matters). A classic technique of "different characteristics → different quanta."
 
 **Focus (MVP vs roadmap):**
-- **MVP core — 7 business capabilities uniting 10 of 13 quanta** (Q1–Q9 + Q13; Q5 starts inside Q4, Q9 inside Q6, a separate split in R2) + AIP + sensor layers (Edge AI Platform, IoT, Mobile App, RFID). *(Q13 — MVP minimum: registry + inspections.)* Grouping of capabilities is in [mvp-vs-roadmap.md](mvp-vs-roadmap.md).
-- **Roadmap:** Q11 Social Marketing (R1) · Q12 Ops&Scheduling (R1) · Lakehouse+Feature Store (R1) · splitting off Q5/Q9 (R2) · full agentic layer (R2) · Q10 Transport/autonomy (R3).
+- **MVP core — 7 business capabilities uniting 10 of 13 quanta** (Q1–Q9 + Q13; Q5 starts inside Q4, Q9 inside Q6, a separate split in R2) + AIP + sensor layers (Edge AI Platform, IoT, Mobile App, RFID) + the **manned electric transport + data-mule (the Q10 asset) as MVP infrastructure**. *(Q13 — MVP minimum: registry + inspections.)* Grouping of capabilities is in [mvp-vs-roadmap.md](mvp-vs-roadmap.md).
+- **Roadmap:** Q11 Social Marketing (R1) · Q12 Ops&Scheduling (R1) · Lakehouse+Feature Store (R1) · splitting off Q5/Q9 (R2) · full agentic layer (R2) · Q10 **autonomy** (autopilot/driverless) (R3).
 Details and split signals are in [mvp-vs-roadmap.md](mvp-vs-roadmap.md).
 
 Sensor layers (not quanta): **Edge AI Platform** (a single edge runtime for fixed RGB/thermal cameras: Camera Processing · Animal Detection · Crowd Analytics · Queue Monitoring · Local Buffering; pipelines by node configuration, managed via the AIP), **IoT sensors (MQTT)**.

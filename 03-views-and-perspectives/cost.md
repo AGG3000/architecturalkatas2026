@@ -17,11 +17,11 @@ Order of magnitude (cloud AWS/GCP class), not a final budget. **Three growth sce
 | **Edge ownership for cameras** (24/7 power · depreciation/refresh of boxes · MLOps/OTA to the device fleet) | ≈$220 | ≈$350 | ≈$500 |
 | **Connectivity: site fixed uplink + dual-carrier SIM + satellite (ADR-017)** | ≈$80 | ≈$200 | ≈$350 |
 | IdP · maps · observability | ≈$200 | ≈$600 | ≈$1,000 |
-| **Shuttle fleet lease** (Q10 — roadmap: none in MIN; PROJECTED ≈5–6 units; RAPID more) | — | ≈$3,000 | ≈$5,000 |
-| **Total OpEx** | **≈ $2,040/mo** | **≈ $9,350/mo** | **≈ $15,650/mo** |
+| **Transport fleet lease** (Q10 — manned electric from the MVP; PROJECTED ≈5–6 units + autonomy; RAPID more) | ≈$1,500 | ≈$3,000 | ≈$5,000 |
+| **Total OpEx** | **≈ $3,540/mo** | **≈ $9,350/mo** | **≈ $15,650/mo** |
 | PSP fees | pass-through (≈2.9%+$0.30/txn) | pass-through | pass-through |
 
-> Q13 (Ride & Attractions) is included in the compute line (MVP minimum — registry + rules; predictive maintenance — roadmap). The shuttle lease is counted in OpEx as a roadmap phase (R3).
+> Q13 (Ride & Attractions) is included in the compute line (MVP minimum — registry + rules; predictive maintenance — roadmap). The transport lease appears in OpEx **from the MVP** (manned electric, ~3 small units); **autonomy** is the R3 phase.
 
 > **Internet & data transfer.** The mobile (cellular) edge→cloud channel is in the "Connectivity" line (dual-carrier SIM), together with the site's main fixed uplink and satellite backup. **Cloud egress/data-transfer** has no separate large line **by design**: edge-CV does not push raw video to the cloud (only events/metadata leave), so outbound traffic is small and folded into the Compute/Object-storage lines.
 
@@ -39,7 +39,7 @@ Order of magnitude (cloud AWS/GCP class), not a final budget. **Three growth sce
 >
 > **Honest note:** the OpEx AI Gateway + Agent lines are sized at **moderate (~13%) attach**; at higher attach they scale roughly proportionally. The **step limit + cheap-default model + inference cache** bound per-session cost, and the **cost-monitor cap** (AI spend ≤ target % of revenue, [ADR-008](../04-adrs/ADR-008-ai-platform-provider-abstraction-fallback-cost.md)) throttles/degrades to fallback before the budget blows. Even ≈$6.6k/mo at 60% attach stays **≪ 0.1% of revenue** (see Conclusion) — high attach is a *good* problem (retention working). See [agents.md](../05-ai/agents.md).
 
-## CapEx (one-time, MVP; excludes the autonomous shuttle)
+## CapEx (one-time, MVP; excludes the transport fleet (leased))
 
 | Item | Qty | ≈Unit cost | Note |
 |---|---|---|---|
@@ -51,18 +51,18 @@ Order of magnitude (cloud AWS/GCP class), not a final budget. **Three growth sce
 | Edge AI Platform nodes | ≈4–6 | ≈$800 each (≈ $4–5k) | single runtime, one instance per camera cluster (not a "box per zone") |
 | WiFi mesh | — | — | coverage along routes |
 | Directional radio bridges (PtP/PtMP) | ≈4–8 links | $150–400 each | stationary remote zones/edge nodes with line-of-sight |
-| **Total** | | **≈ $19,000** | MVP, excl. autonomous shuttle |
+| **Total** | | **≈ $19,000** | MVP, excl. transport fleet (leased) |
 
 **Notes:**
 - **Radio bridges** are one-time CapEx but remove part of the monthly cellular OpEx at stationary remote points (see [ADR-004](../04-adrs/ADR-004-edge-connectivity-mesh-cellular-data-mule.md)).
 - **Camera coverage is phased:** the MVP covers priority zones and enclosure clusters; cheap MQTT climate/breach sensors sit on **every** enclosure (independent of cameras); extending RGB to all 55 enclosures/zones happens as growth proceeds (the Compute/Edge line scales in PROJECTED/RAPID).
 - **Edge ownership ≠ CapEx only:** power, depreciation/refresh (≈every 3 years) and MLOps/OTA are counted in the OpEx line "Edge ownership for cameras."
-- **Autonomous shuttle is leased** (roadmap R3), not CapEx. Fleet: MVP ≈3 units (2 active + 1 spare charging), scaling to ≈5–6 (2 routes) sized by passenger demand; the same fleet covers the data-mule without separate vehicles.
+- **The transport fleet is leased** (manned electric **from the MVP**; autonomy — R3), not CapEx. Fleet: MVP ≈3 units (2 active + 1 spare charging), scaling to ≈5–6 (2 routes) sized by passenger demand; the same fleet covers the data-mule without separate vehicles.
 
 ## Growth by scenario and control levers
-- **Total by scenario:** MIN ≈ **$2.0k/mo** · PROJECTED ≈ **$9.4k/mo** · RAPID ≈ **$15.7k/mo**.
+- **Total by scenario:** MIN ≈ **$3.5k/mo** · PROJECTED ≈ **$9.4k/mo** · RAPID ≈ **$15.7k/mo**.
 - **Costs grow slower than traffic.** Traffic MIN→PROJECTED grows 3× (5k→15k visits/day), while costs grow less: edge-CV, IdP and RAG barely depend on the number of visitors (the cameras and sensors are the same, and the RAG assistant does not care how many people ask). This means **cost per visitor falls** with growth.
-- **The $2.0k→$9.4k jump is new capabilities, not the same thing getting more expensive:** PROJECTED includes roadmap components that the MVP lacks — the **shuttle lease** (≈$3k/mo) and the **full Lakehouse** (a minimal warehouse in the MVP).
+- **The $3.5k→$9.4k jump is fleet scaling + autonomy + the full Lakehouse** (not the same thing getting more expensive): the MVP already runs a small manned electric fleet (≈$1.5k/mo); PROJECTED scales it and adds autonomy (≈$3k/mo total) plus the **full Lakehouse** (a minimal warehouse in the MVP).
 - **What makes the solution cheaper (consequences of the design):**
   - **edge-CV** — recognition on site, raw video does not go to the cloud → no charge for outbound traffic (this would be the main cost with cloud CV);
   - **data mule** — data is carried by the shuttle → no need for a paid gateway at each of the 55 enclosures;
